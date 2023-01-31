@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  
+  vitessce-config-builder:
+    build:
+      context: .
+    image: vitessce-config-builder
+    hostname: vitessce-config-builder
+    container_name: vitessce-config-builder
+    init: true
+    restart: always
+    environment:
+      - HOST_GID=${HOST_GID:-1002}
+      - HOST_UID=${HOST_UID:-1002}
+    ports:
+      - "8989:8989"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8989"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - sennet_docker_network
+    volumes:
+      - "./log:/usr/src/app/log"
+      - "./src:/usr/src/app/src"
+      - "./nginx/local/conf.d:/etc/nginx/conf.d"
+networks:
+  # This is the network created by gateway to enable communication between multiple docker-compose projects
+  sennet_docker_network:
+    external: true
