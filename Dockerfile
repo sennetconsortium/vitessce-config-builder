@@ -32,12 +32,16 @@ module_hotfixes=true\n'\
 # 6 - Install flask app dependencies with pip (pip3 also works)
 # 7 - Make the start script executable
 # 8 - Clean all yum cache
-RUN yum install -y yum-utils && \
+RUN yum -y update && \
+    yum -y install gcc && \
+    pip install vitessce && \
+    pip install flask && \
+    pip install flask-cors && \
+    yum install -y yum-utils && \
     yum-config-manager --enable nginx-mainline && \
     yum install -y nginx && \
     rm /etc/nginx/conf.d/default.conf && \
     mv nginx/nginx.conf /etc/nginx/nginx.conf && \
-    pip install -r src/requirements.txt && \
     chmod +x start.sh && \
     yum clean all 
 
