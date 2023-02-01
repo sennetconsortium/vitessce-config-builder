@@ -5,7 +5,7 @@ from vitessce import VitessceConfig, ViewType as vt, CoordinationType as ct, Fil
 app = Flask(__name__)
 CORS(app)
 app.config.from_pyfile('instance/app.cfg')
-FILE_URL = app.config['FILE_URL']
+ASSETS_URL = app.config['ASSETS_URL']
 
 
 @app.route('/')
@@ -13,15 +13,17 @@ def say_hello():
     return 'Hello from vitessce-config-builder'
 
 
-@app.route('/sn-rna-seq', methods=['GET'])
-def add():
+@app.route('/sn-rna-seq/<dataset_id>', methods=['GET'])
+def add(dataset_id):
     token = request.headers.get('Authorization')
     if token is None:
         return make_response("No authentication token.", 401)
 
+    file_url = ASSETS_URL + dataset_id + "/hubmap_ui/anndata-zarr/secondary_analysis.zarr"
+
     vc = VitessceConfig(schema_version="1.0.14", name='My Config')
     my_dataset = vc.add_dataset(name='SNT753.WGBZ.884').add_file(
-        url=FILE_URL,
+        url=file_url,
         file_type=ft.ANNDATA_CELLS_ZARR,
         options={"factors": ["obs/marker_gene_0",
                              "obs/marker_gene_1",
@@ -30,11 +32,11 @@ def add():
                              "obs/marker_gene_4"],
                  "mappings": {"UMAP": {"dims": [0, 1], "key": "obsm/X_umap"}}}
     ).add_file(
-        url=FILE_URL,
+        url=file_url,
         file_type=ft.ANNDATA_CELL_SETS_ZARR,
         options=[{"groupName": "Leiden", "setName": "obs/leiden"}]
     ).add_file(
-        url=FILE_URL,
+        url=file_url,
         file_type="anndata-expression-matrix.zarr",
         options={"geneAlias": "var/hugo_symbol",
                  "matrix": "X",
