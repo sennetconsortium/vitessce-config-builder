@@ -3,7 +3,7 @@ from flask_cors import CORS
 from vitessce import VitessceConfig, ViewType as vt, CoordinationType as ct, FileType as ft, hconcat, vconcat
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 app.config.from_pyfile('instance/app.cfg')
 ASSETS_URL = app.config['ASSETS_URL']
 
