@@ -13,7 +13,7 @@ def say_hello():
     return 'Hello from vitessce-config-builder'
 
 
-@app.route('/sn-RNA-seq', methods=['GET'])
+@app.route('/sn-rna-seq', methods=['GET'])
 def add():
     token = request.headers.get('Authorization')
     if token is None:
